@@ -1,0 +1,23 @@
+node{
+  stage('SCM Checkout'){
+  git 'https://github.com/srinivasreddii/Spring-Boot'
+  }
+  stage('SonarQube Analysis'){
+    withSonarQubeEnv('Sonar'){
+      bat 'mvn sonar:sonar'
+    }  
+  }
+  stage('Compile and Package'){
+  bat 'mvn package'
+  }
+  stage('Email Notification'){
+  emailext body: 'Build Success', subject: 'Jenkins Build', to: 'sreenivasulu.g@slkgroup.com'
+  }
+  stage('Test'){
+      bat """
+      cd C:\\Users\\TEMP.SLKSOFT.006\\AppData\\Roaming\\npm
+      newman run C:\\Users\\TEMP.SLKSOFT.006\\.jenkins\\workspace\\Pipeline\\EmployeeHUB.postman_collection.json
+  """
+  }
+  
+}
